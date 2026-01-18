@@ -45,8 +45,7 @@ volumes:
 # "docker compose up -d" to start the container in the background
 # "docker compose start" to start it if paused
 # "docker exec -it WeightTracker bash" to enter the container shell
-# "psql -U hustini -d PitStop" to start the PostgreSQL interactive terminal as user hustini
-# "\c amigos" to connect to the 'amigos' database
+# "psql -U hustini -d WeightTracker" to start the PostgreSQL interactive terminal as user hustini
 
 # "\q" to quit the PostgreSQL interactive terminal
 # "exit" to leave the container shell
