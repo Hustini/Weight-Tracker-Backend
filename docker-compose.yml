@@ -1,0 +1,53 @@
+services:
+  db:
+    # Name of the container
+    container_name: WeightTracker
+
+    # Docker image to use (latest official PostgreSQL image)
+    image: postgres:latest
+
+    environment:
+      # Username for the PostgreSQL superuser
+      POSTGRES_USER: hustini
+
+      # Password for the PostgreSQL superuser
+      POSTGRES_PASSWORD: password
+
+      POSTGRES_DB: WeightTracker
+
+      # Path inside the container where PostgreSQL will store its data
+      PGDATA: /data/postgres
+
+    volumes:
+      # Mount a named volume to persist database data
+      - db:/data/postgres
+
+    ports:
+      # Map port 5432 in the container to 5332 on the host
+      - "5332:5432"
+
+    networks:
+      # Connect the container to the 'db' network
+      - db
+
+    # Automatically restart the container unless explicitly stopped
+    restart: unless-stopped
+
+# Define a custom bridge network named 'db'
+networks:
+  db:
+    driver: bridge
+
+# Define a named volume for persistent PostgreSQL data
+volumes:
+  db:
+
+# "docker compose up -d" to start the container in the background
+# "docker compose start" to start it if paused
+# "docker exec -it WeightTracker bash" to enter the container shell
+# "psql -U hustini -d PitStop" to start the PostgreSQL interactive terminal as user hustini
+# "\c amigos" to connect to the 'amigos' database
+
+# "\q" to quit the PostgreSQL interactive terminal
+# "exit" to leave the container shell
+# "docker compose down" to stop and remove the container (but keep the data)
