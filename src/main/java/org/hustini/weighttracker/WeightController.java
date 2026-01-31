@@ -5,6 +5,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @RestController
 @RequestMapping("/weights")
 public class WeightController {
@@ -13,6 +16,22 @@ public class WeightController {
 
     public WeightController(WeightService weightService) {
         this.weightService = weightService;
+    }
+
+    @GetMapping
+    public ResponseEntity<?> getAllWeights() {
+
+        List<Weight> weights = weightService.getAllWeights();
+
+        List<WeightDTO> response = weights.stream()
+                .map(weight -> new WeightDTO(
+                        "Weight entry retrieved successfully",
+                        weight.getWeight(),
+                        weight.getTimestamp()
+                ))
+                .collect(Collectors.toList());
+
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping
