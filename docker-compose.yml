@@ -40,6 +40,7 @@ services:
 
     # Build your app from a Dockerfile in the current directory
     build: .
+    image: ghcr.io/hustini/weighttracker:latest
 
     # Map your app port
     ports:
