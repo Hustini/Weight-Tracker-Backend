@@ -6,12 +6,10 @@ LABEL authors="salih"
 WORKDIR /app
 
 # Step 3: Copy the Spring Boot JAR file into the container
-COPY target/WeightTracker-0.0.1-SNAPSHOT.jar /app/WeightTracker.jar
+COPY target/*.jar /app/WeightTracker.jar
 
 # Step 4: Expose the port your application runs on
 EXPOSE 8080
 
 # Step 5: Define the command to run your Spring Boot application
 CMD ["java", "-jar", "/app/WeightTracker.jar"]
-
-#ENTRYPOINT ["top", "-b"]

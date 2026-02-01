@@ -1,9 +1,9 @@
 services:
+  # -------------------------
+  # PostgreSQL Database Service
+  # -------------------------
   db:
-    # Name of the container
-    container_name: WeightTracker
-
-    # Docker image to use (latest official PostgreSQL image)
+    container_name: WeightTrackerDB
     image: postgres:latest
 
     environment:
@@ -27,18 +27,53 @@ services:
       - "5332:5432"
 
     networks:
-      # Connect the container to the 'db' network
+      - db
+
+    restart: unless-stopped
+
+
+  # -------------------------
+  # Application Service
+  # -------------------------
+  app:
+    container_name: WeightTrackerApp
+
+    # Build your app from a Dockerfile in the current directory
+    build: .
+
+    # Map your app port
+    ports:
+      - "8080:8080"
+
+    # Ensure DB starts first
+    depends_on:
+      - db
+
+    environment:
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_NAME: WeightTracker
+      DB_USER: hustini
+      DB_PASSWORD: password
+
+    networks:
       - db
 
     # Automatically restart the container unless explicitly stopped
     restart: unless-stopped
 
-# Define a custom bridge network named 'db'
+
+# -------------------------
+# Networks
+# -------------------------
 networks:
   db:
     driver: bridge
 
-# Define a named volume for persistent PostgreSQL data
+
+# -------------------------
+# Volumes
+# -------------------------
 volumes:
   db:
 
