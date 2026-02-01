@@ -5,6 +5,7 @@ services:
   db:
     container_name: WeightTrackerDB
     image: postgres:latest
+    platform: linux/amd64
 
     environment:
       # Username for the PostgreSQL superuser
@@ -41,6 +42,7 @@ services:
     # Build your app from a Dockerfile in the current directory
     build: .
     image: ghcr.io/hustini/weighttracker:latest
+    platform: linux/amd64
 
     # Map your app port
     ports:
