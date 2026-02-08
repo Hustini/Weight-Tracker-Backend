@@ -1,4 +1,4 @@
-package org.hustini.weighttracker;
+package org.hustini.weighttracker.weight;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

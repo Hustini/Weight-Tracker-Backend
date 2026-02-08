@@ -1,4 +1,4 @@
-package org.hustini.weighttracker;
+package org.hustini.weighttracker.weight;
 
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
