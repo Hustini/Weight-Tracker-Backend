@@ -1,16 +1,14 @@
 package org.hustini.weighttracker.weight;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Column;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.Instant;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.hustini.weighttracker.user.User;
 
 @Entity
 @Getter
@@ -27,4 +25,17 @@ public class Weight {
     @CreationTimestamp
     @Column(nullable = false, updatable = false)
     private Instant timestamp;
+
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "user_id", nullable = false)
+    @JsonIgnore
+    private User user;
+
+    public Weight() {
+    }
+
+    public Weight(User user, Double weight) {
+        this.user = user;
+        this.weight = weight;
+    }
 }
