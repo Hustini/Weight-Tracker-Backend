@@ -1,4 +1,4 @@
-package org.hustini.weighttracker.config;
+package org.hustini.weighttracker.authentication;
 
 import org.hustini.weighttracker.user.User;
 import io.jsonwebtoken.Claims;
