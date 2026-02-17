@@ -18,6 +18,10 @@ public class WeightService {
     }
 
     public Weight addWeight(Double weightValue) {
+        // Todo: get user using
+        // Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        // ApplicationUser applicationUser = (ApplicationUser) authentication.getPrincipal();
+
         Weight weight = new Weight();
         weight.setWeight(weightValue);
         return weightRepository.save(weight);
