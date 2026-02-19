@@ -5,12 +5,12 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class AuthentictionRequestDTO {
+public class AuthenticationRequestDTO {
 
     private String username;
     private String password;
 
-    public AuthentictionRequestDTO(String username, String password) {
+    public AuthenticationRequestDTO(String username, String password) {
         this.username = username;
         this.password = password;
     }
