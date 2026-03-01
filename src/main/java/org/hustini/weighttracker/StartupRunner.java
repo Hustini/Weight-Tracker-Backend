@@ -14,13 +14,13 @@ public class StartupRunner implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
-        User user = new User("jeff");
-        Weight weight1 = new Weight(user, 50.0);
-        Weight weight2 = new Weight(user, 60.0);
+        User testUser = new User(System.getenv("USERNAME"), System.getenv("PASSWORD"));
+        Weight weight1 = new Weight(testUser, 50.0);
+        Weight weight2 = new Weight(testUser, 60.0);
         List<Weight> weights = new ArrayList<>();
         weights.add(weight1);
         weights.add(weight2);
-        UserDTO test = new UserDTO(user, weights);
-        System.out.println("User: " + test);
+        UserDTO testUserDTO = new UserDTO(testUser, weights);
+        System.out.println("User: " + testUserDTO);
     }
 }
