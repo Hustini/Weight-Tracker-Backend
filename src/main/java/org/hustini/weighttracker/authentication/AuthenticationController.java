@@ -2,6 +2,7 @@ package org.hustini.weighttracker.authentication;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -15,8 +16,10 @@ public class AuthenticationController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(AuthentictionRequestDTO authentictionRequestDTO) {
-        authenticationService.login(authentictionRequestDTO);
-        return ResponseEntity.ok().body("Controller called");
+    public ResponseEntity<?> login(@RequestBody AuthenticationRequestDTO authenticationRequestDTO) {
+        System.out.println(authenticationRequestDTO.getUsername());
+        String test = authenticationService.login(authenticationRequestDTO);
+        System.out.println(test);
+        return ResponseEntity.ok().body(test);
     }
 }
