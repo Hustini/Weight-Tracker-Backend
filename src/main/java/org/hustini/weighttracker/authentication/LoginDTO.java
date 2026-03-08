@@ -10,9 +10,9 @@ public class LoginDTO {
     private String token;
     private long expiresIn;
 
-    public LoginDTO(String message, long expiresIn) {
+    public LoginDTO(String message, String token, long expiresIn) {
         this.message = message;
-        // this.token = token;
+        this.token = token;
         this.expiresIn = expiresIn;
     }
 }
