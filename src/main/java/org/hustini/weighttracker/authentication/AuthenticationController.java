@@ -1,5 +1,6 @@
 package org.hustini.weighttracker.authentication;
 
+import org.hustini.weighttracker.user.User;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -10,16 +11,18 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/auth")
 public class AuthenticationController {
     private final AuthenticationService authenticationService;
+    private final JwtService jwtService;
 
-    public AuthenticationController(AuthenticationService authenticationService) {
+    public AuthenticationController(AuthenticationService authenticationService,  JwtService jwtService) {
         this.authenticationService = authenticationService;
+        this.jwtService = jwtService;
     }
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody AuthenticationRequestDTO authenticationRequestDTO) {
-        System.out.println(authenticationRequestDTO.getUsername());
-        String test = authenticationService.login(authenticationRequestDTO);
-        System.out.println(test);
-        return ResponseEntity.ok().body(test);
+        User user = authenticationService.login(authenticationRequestDTO);
+        // String jwtToken = jwtService.generateToken(user);
+        LoginDTO loginMessage = new LoginDTO("Login Successful", jwtService.getExpirationTime());
+        return ResponseEntity.ok().body(loginMessage);
     }
 }
