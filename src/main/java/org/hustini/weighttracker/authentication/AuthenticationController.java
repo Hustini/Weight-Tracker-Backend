@@ -25,4 +25,11 @@ public class AuthenticationController {
         LoginDTO loginMessage = new LoginDTO("Login Successful", jwtToken, jwtService.getExpirationTime());
         return ResponseEntity.ok().body(loginMessage);
     }
+
+    @PostMapping("/register")
+    public ResponseEntity<?> register(@RequestBody RegisterRequestDTO registerRequestDTO) {
+        User user = authenticationService.register(registerRequestDTO);
+        RegisterDTO registerResponse = new RegisterDTO("Sign up Successful", user.getUsername(), user.getEmail(), user.getPhoneNumber());
+        return ResponseEntity.ok().body(registerResponse);
+    }
 }
