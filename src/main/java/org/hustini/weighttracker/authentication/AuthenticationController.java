@@ -1,10 +1,35 @@
 package org.hustini.weighttracker.authentication;
 
-import org.springframework.stereotype.Controller;
+import org.hustini.weighttracker.user.User;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/auth")
 public class AuthenticationController {
+    private final AuthenticationService authenticationService;
+    private final JwtService jwtService;
+
+    public AuthenticationController(AuthenticationService authenticationService,  JwtService jwtService) {
+        this.authenticationService = authenticationService;
+        this.jwtService = jwtService;
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@RequestBody AuthenticationRequestDTO authenticationRequestDTO) {
+        User user = authenticationService.login(authenticationRequestDTO);
+        String jwtToken = jwtService.generateToken(user);
+        LoginDTO loginMessage = new LoginDTO("Login Successful", jwtToken, jwtService.getExpirationTime());
+        return ResponseEntity.ok().body(loginMessage);
+    }
+
+    @PostMapping("/register")
+    public ResponseEntity<?> register(@RequestBody RegisterRequestDTO registerRequestDTO) {
+        User user = authenticationService.register(registerRequestDTO);
+        RegisterDTO registerResponse = new RegisterDTO("Sign up Successful", user.getUsername(), user.getEmail(), user.getPhoneNumber());
+        return ResponseEntity.ok().body(registerResponse);
+    }
 }
