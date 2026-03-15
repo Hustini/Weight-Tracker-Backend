@@ -76,3 +76,4 @@ volumes:
 # "docker compose up -d --build" to build and start the container (DB + Backend)
 # "mvn clean package -DskipTests" to rebuild maven
 # "docker compose down" to stop and remove the container
+# "docker compose exec db psql -U hustini -d WeightTracker" to look inside the DB
