@@ -26,21 +26,23 @@ public class RateLimitFilter implements Filter {
         HttpServletResponse httpResponse = (HttpServletResponse) response;
 
         String clientIp = httpRequest.getRemoteAddr();
-        startWindowIfFirstRequest(clientIp);
-
-        Map.Entry<AtomicInteger, Long> entry = requestCounts.get(clientIp);
-        int currentCount = entry.getKey().incrementAndGet();
+        Map.Entry<AtomicInteger, Long> entry = startWindowIfFirstRequest(clientIp);
         Long timeStampOfTheFirstRequest = entry.getValue();
 
         long oneMinuteInNanos = 60_000_000_000L;
         long now = System.nanoTime();
         long windowEnd = timeStampOfTheFirstRequest + oneMinuteInNanos;
-        boolean windowExpired = now > windowEnd;
-        boolean limitExceeded = currentCount > MAX_REQUESTS_PER_MINUTE;
+        boolean windowExpired = now >= windowEnd;
 
         if (windowExpired) {
-            resetWindow(clientIp);
-        } else if (limitExceeded) {
+            deleteWindow(clientIp);
+            entry = startWindowIfFirstRequest(clientIp);
+        }
+
+        int currentCount = entry.getKey().incrementAndGet();
+        boolean limitExceeded = currentCount > MAX_REQUESTS_PER_MINUTE;
+
+        if (limitExceeded) {
             httpResponse.setStatus(HttpStatus.TOO_MANY_REQUESTS.value());
             httpResponse.getWriter().write("Too many requests. Please try again later.");
             return;
@@ -49,12 +51,12 @@ public class RateLimitFilter implements Filter {
         chain.doFilter(request, response);
     }
 
-    public void startWindowIfFirstRequest(String clientIp) {
+    public Map.Entry<AtomicInteger, Long> startWindowIfFirstRequest(String clientIp) {
         requestCounts.putIfAbsent(clientIp, new AbstractMap.SimpleEntry<>(new AtomicInteger(0), System.nanoTime()));
+        return requestCounts.get(clientIp);
     }
 
-    public void resetWindow(String clientIp) {
+    public void deleteWindow(String clientIp) {
         requestCounts.remove(clientIp);
-        startWindowIfFirstRequest(clientIp);
     }
 }
