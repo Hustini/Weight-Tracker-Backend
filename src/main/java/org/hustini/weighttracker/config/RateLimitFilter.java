@@ -32,9 +32,6 @@ public class RateLimitFilter implements Filter {
         int currentCount = entry.getKey().incrementAndGet();
         Long timeStampOfTheFirstRequest = entry.getValue();
 
-        System.out.println("Current request count: " + currentCount);
-        System.out.println("Current request time: " + timeStampOfTheFirstRequest);
-
         long oneMinuteInNanos = 60_000_000_000L;
         long now = System.nanoTime();
         long windowEnd = timeStampOfTheFirstRequest + oneMinuteInNanos;
