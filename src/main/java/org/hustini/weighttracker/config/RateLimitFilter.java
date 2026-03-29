@@ -26,22 +26,38 @@ public class RateLimitFilter implements Filter {
         HttpServletResponse httpResponse = (HttpServletResponse) response;
 
         String clientIp = httpRequest.getRemoteAddr();
-        requestCounts.putIfAbsent(clientIp, new AbstractMap.SimpleEntry<>(new AtomicInteger(0), System.nanoTime()));
-        int currentCount = requestCounts.get(clientIp).getKey().incrementAndGet();
-        Long timeStampOfTheFirstRequest = requestCounts.get(clientIp).getValue();
+        startWindowIfFirstRequest(clientIp);
+
+        Map.Entry<AtomicInteger, Long> entry = requestCounts.get(clientIp);
+        int currentCount = entry.getKey().incrementAndGet();
+        Long timeStampOfTheFirstRequest = entry.getValue();
 
         System.out.println("Current request count: " + currentCount);
         System.out.println("Current request time: " + timeStampOfTheFirstRequest);
 
         long oneMinuteInNanos = 60_000_000_000L;
-        if (currentCount > MAX_REQUESTS_PER_MINUTE && timeStampOfTheFirstRequest + oneMinuteInNanos > System.nanoTime()) {
+        long now = System.nanoTime();
+        long windowEnd = timeStampOfTheFirstRequest + oneMinuteInNanos;
+        boolean windowExpired = now > windowEnd;
+        boolean limitExceeded = currentCount > MAX_REQUESTS_PER_MINUTE;
+
+        if (windowExpired) {
+            resetWindow(clientIp);
+        } else if (limitExceeded) {
             httpResponse.setStatus(HttpStatus.TOO_MANY_REQUESTS.value());
             httpResponse.getWriter().write("Too many requests. Please try again later.");
             return;
-        } else if (currentCount > MAX_REQUESTS_PER_MINUTE && timeStampOfTheFirstRequest + oneMinuteInNanos < System.nanoTime()) {
-            requestCounts.remove(clientIp);
         }
 
         chain.doFilter(request, response);
+    }
+
+    public void startWindowIfFirstRequest(String clientIp) {
+        requestCounts.putIfAbsent(clientIp, new AbstractMap.SimpleEntry<>(new AtomicInteger(0), System.nanoTime()));
+    }
+
+    public void resetWindow(String clientIp) {
+        requestCounts.remove(clientIp);
+        startWindowIfFirstRequest(clientIp);
     }
 }
